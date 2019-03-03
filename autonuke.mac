@@ -1,0 +1,101 @@
+| Made by Aclaza
+| Usage /mac autonuke
+
+#include spellcast.inc
+
+Sub Main
+	/declare nuke1 string
+	/declare nuke2 strin
+	/declare nuke3 string
+	/declare nuke4 string
+	/declare AA1 string
+	/declare i int
+	/declare spawnID int
+	/declare DoNotPull string
+	/declare range int
+	
+	|# We use 2 nukes, and 3 AE spells
+	/varset nuke1 "Ancient: Spear of Gelaqua"
+	/varset nuke2 "Ether Flame"
+
+	|# AE Spells
+	/varset nuke3 "Gelid Rains"
+	/varset nuke4 "Circle of Thunder"
+	
+	/varset range 100
+	
+	/varset DoNotPull Reaper,Borat,Stephen Strange,Patches Ohoolihan,Mister Magelo,Dwight Schrute,Aristotle,Mr Moneybags,The Gender Bender,Yoda,Homer Simpson,Gilgamesh,Rainbow Brite,Confucius,Costco,Mel Gibson,Grendel,Darby,Vlad The Validator,Deckard Cain,Mister Lockout,Guardian Gwalec,Guardian Voelath,Guardian Helind,Frans Henkal,Banker Granger,Banker Ceridan
+	
+	/g Ready to nuke.
+	
+	:idle
+
+	/if ((${SpawnCount[npc targetable los radius ${range} zradius ${range}]} > 0) && (${SpawnCount[npc targetable los radius ${range} zradius ${range}]} < 3)) {
+		/goto :attack
+	} else /if (${SpawnCount[npc targetable los radius ${range} zradius ${range}]} > 4) {
+		/goto :ae_attack
+	} else /if (${SpawnCount[npc targetable los radius ${range} zradius ${range}]} == 0) {
+		/goto :idle
+	}
+	
+	|# Single target attack
+	:attack
+	/if (${SpawnCount[npc targetable los radius ${range} zradius ${range}]} == 0) {
+		/goto :idle
+	}
+	/for i 1 to ${SpawnCount[npc targetable los radius ${range} zradius ${range}]}
+		/vardata spawnID NearestSpawn[${i},npc targetable los radius ${range} zradius ${range}].ID
+		
+		/if (${Me.Moving}) {
+			/goto :idle
+		}
+
+		/if (${DoNotPull.Find[${Spawn[${spawnID}].CleanName}]}==NULL) {
+			/if (${Spawn[${spawnID}].CleanName.Length}>0) {
+				/if ((${Target.ID}==NULL) || (${Target.Type.Equal[PC]}) || (${Target.Type.Equal[CORPSE]})) {
+					/squelch /stick off
+					/squelch /target id ${spawnID}
+				} else /if (${Cast.Ready[${nuke1}]}) {
+					/squelch /face
+					/call Cast ${nuke1} gem1
+				} else /if (${Cast.Ready[${nuke2}]}) {
+					/squelch /face
+					/call Cast ${nuke2} gem2
+				} else {
+					/goto :attack
+				}
+			}
+			/goto :idle
+		}
+	/next i
+	
+	
+	|# AE Attack
+	:ae_attack
+	/if (${SpawnCount[npc targetable los radius ${range} zradius ${range}]} == 0) {
+		/goto :idle
+	}
+	/for i 1 to ${SpawnCount[npc targetable los radius ${range} zradius ${range}]}
+		/vardata spawnID NearestSpawn[${i},npc targetable los radius ${range} zradius ${range}].ID
+
+		/if (${DoNotPull.Find[${Spawn[${spawnID}].CleanName}]}==NULL) {
+			/if (${Spawn[${spawnID}].CleanName.Length}>0) {
+			/if ((${Target.ID}==NULL) || (${Target.Type.Equal[PC]}) || (${Target.Type.Equal[CORPSE]})) {
+				/squelch /stick off
+				/squelch /target id ${spawnID}
+			}
+			/if (${Cast.Ready[${nuke3}]}) {
+				/squelch /face
+				/call Cast ${nuke3} gem3
+			} else /if (${Cast.Ready[${nuke4}]}) {
+				/squelch /face
+				/call Cast ${nuke4} gem4
+			} else }
+				/goto :ae_attack
+			}
+		}
+		/goto :idle
+	}
+	/next i
+/return
+	

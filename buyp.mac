@@ -1,0 +1,49 @@
+|# Made by Aclaza
+Sub Main
+	/declare i int 0
+	/if (!${Defined[Param0]}) {
+		/echo Usage: /mac buyp #
+		/echo Ex... /mac buyp 3
+		/end
+	}
+	
+	/for i 1 to ${Param0}
+		|# Kael Progression Buy
+		/if (${Zone.ID} == 113) {
+			/say buy 51
+			/delay 2s
+			/if (${Window[LargeDialogWindow].Open}) /notify LargeDialogWindow LDW_YesButton leftmouseup
+			/delay 1s
+			/autoinventory
+			/say buy 52
+			/delay 2s
+			/if (${Window[LargeDialogWindow].Open}) /notify LargeDialogWindow LDW_YesButton leftmouseup
+			/delay 1s
+			/autoinventory
+			/say buy 53
+			/delay 2s
+			/if (${Window[LargeDialogWindow].Open}) /notify LargeDialogWindow LDW_YesButton leftmouseup
+			/delay 1s
+			/autoinventory
+		}
+		
+		|# Anguish Progression buy
+		/if (${Zone.ID} == 317) {
+			/say buy 46
+			/delay 2s
+			/if (${Window[LargeDialogWindow].Open}) /notify LargeDialogWindow LDW_YesButton leftmouseup
+			/delay 1s
+			/autoinventory
+			/say buy 47
+			/delay 2s
+			/if (${Window[LargeDialogWindow].Open}) /notify LargeDialogWindow LDW_YesButton leftmouseup
+			/delay 1s
+			/autoinventory
+			/say buy 48
+			/delay 2s
+			/if (${Window[LargeDialogWindow].Open}) /notify LargeDialogWindow LDW_YesButton leftmouseup
+			/delay 1s
+			/autoinventory
+		}
+	/next i
+/end

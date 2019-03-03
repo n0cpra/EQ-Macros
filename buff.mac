@@ -1,0 +1,60 @@
+Sub Main
+	|# Declares
+	/declare 10minannounce int outer 0
+	/declare mybuff string outer
+	/declare bufftype string outer
+	|# End Declares
+	
+	/if (${FindItemCount[Bling Bling]} > 0) {
+		/varset mybuff ${FindItem[Bling Bling].Name}
+		/varset bufftype $$
+	} else /if (${FindItemCount[Sword of Experience]} > 0) {
+		/varset mybuff ${FindItem[Sword of Experience].Name}
+		/varset bufftype XP
+	} else {
+		/echo No item buff found, exiting.
+		/end
+	}
+	
+	|# Just to let you know it loaded.
+	/echo Buff bot loaded.
+	/echo Using Item: ${mybuff}
+
+	/doevents flush
+	
+	|# Call our Check buff routine.
+	/call CheckBuff
+/return
+
+Sub CheckBuff
+	:loop
+	/doevents
+	/doevents flush
+	|#/if ($me.AltAbilityTimer[Mass Group Buff].Minutes == 10) {
+	|#	if (${10minannounce.NotEqual[1]}) {
+	|#		/ooc > MGB ${bufftype} (${FindItem[${mybuff}].Name}) in 10 minutes in ${Zone.ShortName}! <
+	|#		/varset 10minannounce 1
+	|#	}
+	|#}
+	/if (${Cast.Ready[Mass Group Buff]}) {
+		/ooc > MGB ${bufftype} (${FindItem[${mybuff}].Name}) in 5 minutes in ${Zone.ShortName}! <
+		/delay 300s
+		/call Buff
+		/return
+	}
+	/delay 2s
+	/goto :loop
+/return
+Sub Buff
+	/ooc MGB ${bufftype} (${FindItem[${mybuff}].Name}) Inc
+	/delay 1s
+	/casting "Mass Group Buff"
+	/delay 1s
+	/itemnotify ${FindItem[${mybuff}].InvSlot} rightmouseup
+	/delay 10s
+	/ooc Enjoy. Next MGB in ${Me.AltAbilityTimer[Mass Group Buff].TimeHMS} in ${Zone}
+	/delay 1s
+	|#/varset 10minannounce 0
+	/call CheckBuff
+	}
+/return
