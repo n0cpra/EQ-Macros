@@ -1,8 +1,8 @@
 Sub Main
 	|# Declares
-	/declare 10minannounce int outer 0
 	/declare mybuff string outer
 	/declare bufftype string outer
+	/declare aatouse string outer
 	|# End Declares
 	
 	/if (${FindItemCount[Bling Bling]} > 0) {
@@ -12,49 +12,48 @@ Sub Main
 		/varset mybuff ${FindItem[Sword of Experience].Name}
 		/varset bufftype XP
 	} else {
-		/echo No item buff found, exiting.
+		/echo No valid item found, exiting.
 		/end
+	}
+	
+	/if (${Me.AltAbility[Tranquil Blessings]} == 9) {
+		/varset aatouse Tranquil Blessings
+	} else /if (${Me.AltAbility[Mass Group Buff]} == 9) {
+		/varset aatouse Mass Group Buff
 	}
 	
 	|# Just to let you know it loaded.
 	/echo Buff bot loaded.
-	/echo Using Item: ${mybuff}
-
-	/doevents flush
+	/echo Using Item: ${mybuff} Type: ${bufftype}
+	/echo Using AA: ${aatouse}
+	/echo MGB Ready: ${Me.AltAbilityReady[Mass Group Buff]} (${Me.AltAbilityTimer[Mass Group Buff].TimeHMS})
 	
 	|# Call our Check buff routine.
 	/call CheckBuff
 /return
 
+|# MGB Timer check routine
 Sub CheckBuff
+
 	:loop
-	/doevents
-	/doevents flush
-	|#/if ($me.AltAbilityTimer[Mass Group Buff].Minutes == 10) {
-	|#	if (${10minannounce.NotEqual[1]}) {
-	|#		/ooc > MGB ${bufftype} (${FindItem[${mybuff}].Name}) in 10 minutes in ${Zone.ShortName}! <
-	|#		/varset 10minannounce 1
-	|#	}
-	|#}
-	/if (${Cast.Ready[Mass Group Buff]}) {
+	/if (${Me.AltAbilityReady[Mass Group Buff]}) {
 		/ooc > MGB ${bufftype} (${FindItem[${mybuff}].Name}) in 5 minutes in ${Zone.ShortName}! <
 		/delay 300s
 		/call Buff
 		/return
 	}
-	/delay 2s
+	/delay 1s
 	/goto :loop
 /return
+
+|# Buff Casting Routine
 Sub Buff
 	/ooc MGB ${bufftype} (${FindItem[${mybuff}].Name}) Inc
-	/delay 1s
 	/casting "Mass Group Buff"
 	/delay 1s
 	/itemnotify ${FindItem[${mybuff}].InvSlot} rightmouseup
 	/delay 10s
-	/ooc Enjoy. Next MGB in ${Me.AltAbilityTimer[Mass Group Buff].TimeHMS} in ${Zone}
+	/ooc Enjoy! Next MGB in ${Me.AltAbilityTimer[Mass Group Buff].TimeHMS} in ${Zone}
 	/delay 1s
-	|#/varset 10minannounce 0
 	/call CheckBuff
-	}
 /return
