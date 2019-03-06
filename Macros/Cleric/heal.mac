@@ -1,0 +1,69 @@
+|# Heal.mac by Aclaza - Profusion Server
+|# A heavily modified healgroup.mac by Shin Noir
+
+Sub Main
+
+	|# At this % HP, it will heal a group member. Default: 90
+	/declare healPct int outer 90
+	
+	|# When 1 target needing heal, use this
+	/declare healSpell string Big Friggin Heal
+	
+	|# Heal AA - When in need of fast healing.
+	/declare healAA string Divine Arbitration
+	
+	|# When 2+ people, use this
+	/declare groupSpell string Word of Vivification
+	
+	|# Don't modify below!
+	/declare priorityTarget string outer
+	/declare curHealTarget string local
+	/declare curPlayer string local
+	/declare curSpell string local
+	/declare i int outer
+	/declare healCount int outer
+	/declare isHealing bool outer
+	/declare spamCount int outer
+	|# End declares
+
+	/echo Heal.mac - Made by Aclaza (Profusion Server)
+	/echo Heal: ${healSpell}
+	/echo Group Heal: ${groupSpell}
+	/echo Heal %: ${healPct}
+	/echo Heal.mac Loaded!
+	
+	/g Watching the group's health.
+	
+	:Loop
+	/varset healCount 0
+	/varset curHealTarget
+	/for i 0 to ${Group.Members}
+		/varset curPlayer ${Group.Member[${i}]}
+		/if (${Bool[${Spawn[pc ${curPlayer}]}]} && ${Spawn[pc ${curPlayer}].Distance} < 250 && ${Spawn[pc ${curPlayer}].PctHPs} < ${healPct}) {
+			/varcalc healCount ${healCount}+1
+			/varset curHealTarget ${curPlayer}
+		} else /if (${Bool[${Spawn[pc ${curPlayer}]}]} && ${Spawn[pc ${curPlayer}].Distance} > 249 && ${Spawn[pc ${curPlayer}].PctHPs} < ${healPct}) {
+			/if (${spamCount} < 3) {
+				/g You're out of range ${curPlayer} by ${Spawn[pc ${curPlayer}].Distance}m, run to me (${Spawn[pc ${curPlayer}].PctHPs}% HPs).
+				/varcalc spamCount ${spamCount}+1
+			}
+		}
+	/next i
+	
+	|# Heal actions
+	/if (${healCount} == 1 && ${Cast.Ready} && ${Spawn[pc ${curPlayer}].Distance} < 100) {
+		/if (${Me.SpellReady[${healSpell}]}) {
+			/varset curSpell ${healSpell}
+			/g ${curSpell} -> ${curHealTarget} (${Spawn[pc ${curHealTarget}].PctHPs}% HP) <-		
+			/casting "${curSpell}" -targetid|${Spawn[pc ${curHealTarget}].ID} -maxtries|5
+		}
+	} else /if (${healCount}>1 && ${Cast.Ready} && ${Spawn[pc ${curPlayer}].Distance} < 100) {
+		/varset curSpell ${groupSpell}
+		/if (${Me.SpellReady[${curSpell}]}) {
+			/casting "${curSpell}" -maxtries|5
+			/g ${curSpell} -> ${curHealTarget} (${Spawn[pc ${curHealTarget}].PctHPs}% HP) <-
+		}
+		/varset spamCount 0
+	}
+	/goto :Loop
+/return
