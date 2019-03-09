@@ -1,0 +1,79 @@
+| ## Zone Macro by Aclaza ##
+| ## Usage: /mac zone 1-8
+
+Sub Main
+	|# Check for certain things like the 1-8 and group or pub
+	/if ((!${Defined[Param0]}) || (!${Defined[Param1]})) {
+		/echo What tier #?
+		/echo Usage: /mac zone <1-8> <group|pub>
+		/end
+	}
+
+	|# Target the teleporter.
+	/bcaa //tar stephen
+
+	|# Tier 1
+	/if (${Param0} == 1) {
+		/if (${Param1.Equal[group]}) {
+			/bcaa //say templeveeshangroup
+		} else /if (${Param1.Equal[pub]}) {
+			/bcaa //say templeveeshan
+		}
+	}
+	|# Tier 2
+	/if (${Param0} == 2) {
+		/if (${Param1.Equal[group]}) {
+			/bcaa //say t2rssgroup
+		} else /if (${Param1.Equal[pub]}) {
+			/bcaa //say riftseekers
+		}
+	}
+	|# Tier 3
+	/if (${Param0} == 3) {
+		/if (${Param1.Equal[group]}) {
+			/bcaa //say hnjgroup
+		} else /if (${Param1.Equal[pub]}) {
+			/bcaa //say hiddennajena
+		}
+	}
+	|# Tier 4
+	/if (${Param0} == 4) {
+		/if (${Param1.Equal[group]}) {
+			/bcaa //say t4hgroup
+		} else /if (${Param1.Equal[pub]}) {
+			/bcaa //say hole
+		}
+	}
+	|# Tier 5
+	/if (${Param0} == 5) {
+		/if (${Param1.Equal[group]}) {
+			/bcaa //say t5mpggroup
+		} else /if (${Param1.Equal[pub]}) {
+			/bcaa //say provinggrounds
+		}
+	}
+	|# Tier 6
+	/if (${Param0} == 6) {
+		/if (${Param1.Equal[group]}) {
+			/bcaa //say t6klegroup
+		} else /if (${Param1.Equal[pub]}) {
+			/bcaa //say kael
+		}
+	}
+	|# Tier 7
+	/if (${Param0} == 7) {
+		/if (${Param1.Equal[group]}) {
+			/bcaa //say t7angshgroup
+		} else /if (${Param1.Equal[pub]}) {
+			/bcaa //say anguish
+		}
+	}
+	|# Tier 8
+	/if (${Param0} == 8) {
+		/if (${Param1.Equal[group]}) {
+			/bcaa //say t8slprgroup
+		} else /if (${Param1.Equal[pub]}) {
+			/bcaa //say sleeper
+		}
+	}
+/end

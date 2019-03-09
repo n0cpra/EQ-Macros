@@ -1,0 +1,30 @@
+#turbo 20
+
+Sub Main
+/declare dotwenty int local
+/declare turnin string local
+/declare x int local
+
+	/if ((!${Defined[Param0]}) || (!${Defined[Param1]})) {
+		/echo Usage: /mac ti <item> <#>
+		/echo Example: /mac ti "Sword of Experience" 5
+		/echo You must have the correct NPC targetted. Otherwise you may lose an item.
+		/echo DO NOT USE THIS WITH STACKABLE ITEMS.
+		/echo I haven't tried it, but I assume it may not work.
+		/end
+	}
+
+	/varset turnin ${Param0}
+	/varset x ${Param1}
+
+	/for dotwenty 1 to ${x}
+		/itemnotify  ${FindItem[${turnin}].InvSlot} leftmouseup 
+		/delay 1s 
+		/click left target 
+		/delay 1s
+		/notify GiveWnd GVW_Give_Button leftmouseup 
+	/next dotwenty
+
+
+
+/return
